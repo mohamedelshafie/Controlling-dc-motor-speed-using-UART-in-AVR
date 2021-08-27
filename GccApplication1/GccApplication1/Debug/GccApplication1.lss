@@ -1,0 +1,441 @@
+
+GccApplication1.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000226  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  0000027a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  0000027a  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000002ac  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000048  00000000  00000000  000002e8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000076f  00000000  00000000  00000330  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 0000061b  00000000  00000000  00000a9f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000003c8  00000000  00000000  000010ba  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000084  00000000  00000000  00001484  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000389  00000000  00000000  00001508  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    000000d4  00000000  00000000  00001891  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000038  00000000  00000000  00001965  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d4 e0       	ldi	r29, 0x04	; 4
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 5a 00 	call	0xb4	; 0xb4 <main>
+  64:	0c 94 11 01 	jmp	0x222	; 0x222 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <UART_INIT>:
+
+
+void UART_INIT()              //Initialization function for UART
+{
+
+	UBRRL = (unsigned char)(MYUBRR) ;         //send the low  8 bits of the UBRR
+  6c:	83 e3       	ldi	r24, 0x33	; 51
+  6e:	89 b9       	out	0x09, r24	; 9
+	UBRRH = (unsigned char)(MYUBRR>>8);       //send the high 4 bits of the UBRR
+  70:	10 bc       	out	0x20, r1	; 32
+	UCSRB = ((1<<RXEN)|(1<<TXEN));            //Enable transmit and enable RXENn TXENn
+  72:	88 e1       	ldi	r24, 0x18	; 24
+  74:	8a b9       	out	0x0a, r24	; 10
+	UCSRC = ((1<<UCSZ1)|(1<<UCSZ0)|(1<<URSEL));     //Frame with 8 bit data , 1 stop bit, no parity UCSZn1 UCSZn0 , Asynchornous mode
+  76:	86 e8       	ldi	r24, 0x86	; 134
+  78:	80 bd       	out	0x20, r24	; 32
+  7a:	08 95       	ret
+
+0000007c <UART_Read>:
+}
+
+uint8_t UART_Read()                   //Function to read input from UART
+{ while( !(UCSRA & (1<<RXC)) );       //wait until the receiving complete RXCn
+  7c:	5f 9b       	sbis	0x0b, 7	; 11
+  7e:	fe cf       	rjmp	.-4      	; 0x7c <UART_Read>
+	return UDR;                      //return data received by UART and saved in UDR register
+  80:	8c b1       	in	r24, 0x0c	; 12
+}
+  82:	08 95       	ret
+
+00000084 <PWM_Timer0_Init>:
+
+void PWM_Timer0_Init()     //Initialization function for Timer0 to be used as PWM output for motor A
+{
+	
+	TCNT0 = 0;            //Set Timer Initial value
+  84:	12 be       	out	0x32, r1	; 50
+	
+	DDRB  = DDRB | (1<<PB3); //set PB3/OC0 as output pin 
+  86:	87 b3       	in	r24, 0x17	; 23
+  88:	88 60       	ori	r24, 0x08	; 8
+  8a:	87 bb       	out	0x17, r24	; 23
+	 *  Fast PWM Mode WGM01=1 & WGM00=1
+	 *  Clear OC0 when match occurs (non inverted mode) COM00=0 & COM01=1
+	 *  clock = F_CPU/8 CS00=0 CS01=1 CS02=0
+	 */
+	
+	TCCR0 = (1<<WGM00) | (1<<WGM01) | (1<<COM01) | (1<<CS01);
+  8c:	8a e6       	ldi	r24, 0x6A	; 106
+  8e:	83 bf       	out	0x33, r24	; 51
+  90:	08 95       	ret
+
+00000092 <PWM_Timer1_Init>:
+}
+void PWM_Timer1_Init()     //Initialization function for Timer1 to be used as PWM output for motor B
+{
+	TCNT1L = 0;      //Set Timer Initial value
+  92:	1c bc       	out	0x2c, r1	; 44
+	TCNT1H = 0;
+  94:	1d bc       	out	0x2d, r1	; 45
+	
+	DDRD  = DDRD | (1<<PD5);   //set PD5/OC1A as output pin 
+  96:	81 b3       	in	r24, 0x11	; 17
+  98:	80 62       	ori	r24, 0x20	; 32
+  9a:	81 bb       	out	0x11, r24	; 17
+	/* Configure timer control register
+	 *  Fast PWM Mode WGM01=1 & WGM00=1
+	 *  Clear OC0 when match occurs (non inverted mode) COM00=0 & COM01=1
+	 *  clock = F_CPU/8 CS00=0 CS01=1 CS02=0
+	 */
+	TCCR1A = (1<<WGM10) | (1<<COM1A1);
+  9c:	81 e8       	ldi	r24, 0x81	; 129
+  9e:	8f bd       	out	0x2f, r24	; 47
+	TCCR1B = (1<<WGM12) | (1<<CS11);
+  a0:	8a e0       	ldi	r24, 0x0A	; 10
+  a2:	8e bd       	out	0x2e, r24	; 46
+  a4:	08 95       	ret
+
+000000a6 <PWM_Timer2_Init>:
+}
+void PWM_Timer2_Init()        //Initialization function for Timer2 to be used as PWM output for motor C
+{
+	
+	TCNT2 = 0;        //Set Timer Initial value
+  a6:	14 bc       	out	0x24, r1	; 36
+	
+	DDRD  = DDRD | (1<<PD7); //set PD7/OC2 as output pin 
+  a8:	81 b3       	in	r24, 0x11	; 17
+  aa:	80 68       	ori	r24, 0x80	; 128
+  ac:	81 bb       	out	0x11, r24	; 17
+	/* Configure timer control register
+	 *  Fast PWM Mode WGM21=1 & WGM20=1
+	 *  Clear OC0 when match occurs (non inverted mode) COM20=0 & COM21=1
+	 *  clock = F_CPU/8 CS20=0 CS21=1 CS22=0
+	 */
+	TCCR2 = (1<<WGM20) | (1<<WGM21) | (1<<COM21) | (1<<CS21);
+  ae:	8a e6       	ldi	r24, 0x6A	; 106
+  b0:	85 bd       	out	0x25, r24	; 37
+  b2:	08 95       	ret
+
+000000b4 <main>:
+}
+
+
+int main(void)
+{
+  b4:	cf 93       	push	r28
+  b6:	df 93       	push	r29
+  b8:	cd b7       	in	r28, 0x3d	; 61
+  ba:	de b7       	in	r29, 0x3e	; 62
+  bc:	2c 97       	sbiw	r28, 0x0c	; 12
+  be:	0f b6       	in	r0, 0x3f	; 63
+  c0:	f8 94       	cli
+  c2:	de bf       	out	0x3e, r29	; 62
+  c4:	0f be       	out	0x3f, r0	; 63
+  c6:	cd bf       	out	0x3d, r28	; 61
+	
+	DDRC |= 0xFF;              //make port C as output pins 
+  c8:	84 b3       	in	r24, 0x14	; 20
+  ca:	8f ef       	ldi	r24, 0xFF	; 255
+  cc:	84 bb       	out	0x14, r24	; 20
+    
+	
+	PORTC &= 0x00;            // Motors are at stop at the beginning 
+  ce:	85 b3       	in	r24, 0x15	; 21
+  d0:	15 ba       	out	0x15, r1	; 21
+	
+	UART_INIT();             //Calling UART initialization function
+  d2:	0e 94 36 00 	call	0x6c	; 0x6c <UART_INIT>
+	
+	PWM_Timer0_Init();      //Calling Timer0 initialization function
+  d6:	0e 94 42 00 	call	0x84	; 0x84 <PWM_Timer0_Init>
+	
+	PWM_Timer1_Init();      //Calling Timer0 initialization function
+  da:	0e 94 49 00 	call	0x92	; 0x92 <PWM_Timer1_Init>
+	
+	PWM_Timer2_Init();      //Calling Timer0 initialization function
+  de:	0e 94 53 00 	call	0xa6	; 0xa6 <PWM_Timer2_Init>
+	
+	char per1,per2,per3;
+	
+	char frame[12];
+	
+	for(char i=0;i<12;i++){
+  e2:	10 e0       	ldi	r17, 0x00	; 0
+  e4:	0a c0       	rjmp	.+20     	; 0xfa <main+0x46>
+		x = UART_Read();       //Reading one byte ASCII from UART and storing it in x variable
+  e6:	0e 94 3e 00 	call	0x7c	; 0x7c <UART_Read>
+		frame[i]=x;              //Storing the whole frame 'AXXXBXXXCXXX' in an array
+  ea:	e1 e0       	ldi	r30, 0x01	; 1
+  ec:	f0 e0       	ldi	r31, 0x00	; 0
+  ee:	ec 0f       	add	r30, r28
+  f0:	fd 1f       	adc	r31, r29
+  f2:	e1 0f       	add	r30, r17
+  f4:	f1 1d       	adc	r31, r1
+  f6:	80 83       	st	Z, r24
+	
+	char per1,per2,per3;
+	
+	char frame[12];
+	
+	for(char i=0;i<12;i++){
+  f8:	1f 5f       	subi	r17, 0xFF	; 255
+  fa:	1c 30       	cpi	r17, 0x0C	; 12
+  fc:	a0 f3       	brcs	.-24     	; 0xe6 <main+0x32>
+  fe:	80 e0       	ldi	r24, 0x00	; 0
+ 100:	0a c0       	rjmp	.+20     	; 0x116 <main+0x62>
+		x = UART_Read();       //Reading one byte ASCII from UART and storing it in x variable
+		frame[i]=x;              //Storing the whole frame 'AXXXBXXXCXXX' in an array
+	}
+	
+	for(char i=0;i<12;i++){
+		frame[i]-=48;           // Converting ASCII input to integer... example: input zero: ASCII=48 so integer = ASCII-48=zero
+ 102:	e1 e0       	ldi	r30, 0x01	; 1
+ 104:	f0 e0       	ldi	r31, 0x00	; 0
+ 106:	ec 0f       	add	r30, r28
+ 108:	fd 1f       	adc	r31, r29
+ 10a:	e8 0f       	add	r30, r24
+ 10c:	f1 1d       	adc	r31, r1
+ 10e:	90 81       	ld	r25, Z
+ 110:	90 53       	subi	r25, 0x30	; 48
+ 112:	90 83       	st	Z, r25
+	for(char i=0;i<12;i++){
+		x = UART_Read();       //Reading one byte ASCII from UART and storing it in x variable
+		frame[i]=x;              //Storing the whole frame 'AXXXBXXXCXXX' in an array
+	}
+	
+	for(char i=0;i<12;i++){
+ 114:	8f 5f       	subi	r24, 0xFF	; 255
+ 116:	8c 30       	cpi	r24, 0x0C	; 12
+ 118:	a0 f3       	brcs	.-24     	; 0x102 <main+0x4e>
+		frame[i]-=48;           // Converting ASCII input to integer... example: input zero: ASCII=48 so integer = ASCII-48=zero
+	}
+	
+	//combining the XXX of every motor in one variable to use it as a whole integer not separated characters:
+	
+	per1=frame[1]*100+frame[2]*10+frame[3];    //storing the percentage of the motor A
+ 11a:	3a 81       	ldd	r19, Y+2	; 0x02
+ 11c:	8b 81       	ldd	r24, Y+3	; 0x03
+ 11e:	1c 81       	ldd	r17, Y+4	; 0x04
+ 120:	24 e6       	ldi	r18, 0x64	; 100
+ 122:	98 2f       	mov	r25, r24
+ 124:	99 0f       	add	r25, r25
+ 126:	89 2f       	mov	r24, r25
+ 128:	88 0f       	add	r24, r24
+ 12a:	88 0f       	add	r24, r24
+ 12c:	89 0f       	add	r24, r25
+ 12e:	32 9f       	mul	r19, r18
+ 130:	80 0d       	add	r24, r0
+ 132:	11 24       	eor	r1, r1
+ 134:	18 0f       	add	r17, r24
+	per2=frame[5]*100+frame[6]*10+frame[7];    //storing the percentage of the motor B
+ 136:	3e 81       	ldd	r19, Y+6	; 0x06
+ 138:	8f 81       	ldd	r24, Y+7	; 0x07
+ 13a:	48 85       	ldd	r20, Y+8	; 0x08
+ 13c:	98 2f       	mov	r25, r24
+ 13e:	99 0f       	add	r25, r25
+ 140:	89 2f       	mov	r24, r25
+ 142:	88 0f       	add	r24, r24
+ 144:	88 0f       	add	r24, r24
+ 146:	89 0f       	add	r24, r25
+ 148:	32 9f       	mul	r19, r18
+ 14a:	80 0d       	add	r24, r0
+ 14c:	11 24       	eor	r1, r1
+ 14e:	48 0f       	add	r20, r24
+	per3=frame[9]*100+frame[10]*10+frame[11];  //storing the percentage of the motor C
+ 150:	5a 85       	ldd	r21, Y+10	; 0x0a
+ 152:	8b 85       	ldd	r24, Y+11	; 0x0b
+ 154:	3c 85       	ldd	r19, Y+12	; 0x0c
+ 156:	98 2f       	mov	r25, r24
+ 158:	99 0f       	add	r25, r25
+ 15a:	89 2f       	mov	r24, r25
+ 15c:	88 0f       	add	r24, r24
+ 15e:	88 0f       	add	r24, r24
+ 160:	89 0f       	add	r24, r25
+ 162:	52 9f       	mul	r21, r18
+ 164:	80 0d       	add	r24, r0
+ 166:	11 24       	eor	r1, r1
+ 168:	38 0f       	add	r19, r24
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 16a:	2f ef       	ldi	r18, 0xFF	; 255
+ 16c:	84 e3       	ldi	r24, 0x34	; 52
+ 16e:	9c e0       	ldi	r25, 0x0C	; 12
+ 170:	21 50       	subi	r18, 0x01	; 1
+ 172:	80 40       	sbci	r24, 0x00	; 0
+ 174:	90 40       	sbci	r25, 0x00	; 0
+ 176:	e1 f7       	brne	.-8      	; 0x170 <main+0xbc>
+ 178:	00 c0       	rjmp	.+0      	; 0x17a <main+0xc6>
+ 17a:	00 00       	nop
+    while (1) 
+    {
+		
+		_delay_ms(500);
+		
+		OCR0=(per1*255/100);             // multiply percentage of motorA's speed by the PWM value(255)... example: 100% : 100*255/100 = 255(max speed)
+ 17c:	2f ef       	ldi	r18, 0xFF	; 255
+ 17e:	21 9f       	mul	r18, r17
+ 180:	c0 01       	movw	r24, r0
+ 182:	11 24       	eor	r1, r1
+ 184:	e4 e6       	ldi	r30, 0x64	; 100
+ 186:	f0 e0       	ldi	r31, 0x00	; 0
+ 188:	bf 01       	movw	r22, r30
+ 18a:	0e 94 e9 00 	call	0x1d2	; 0x1d2 <__divmodhi4>
+ 18e:	6c bf       	out	0x3c, r22	; 60
+		//output zero on pin PC1 and one on pin PC0 to make motor rotate clockwise
+		PORTC &= (~(1<<PC1));   
+ 190:	85 b3       	in	r24, 0x15	; 21
+ 192:	8d 7f       	andi	r24, 0xFD	; 253
+ 194:	85 bb       	out	0x15, r24	; 21
+		PORTC |= (1<<PC0);
+ 196:	85 b3       	in	r24, 0x15	; 21
+ 198:	81 60       	ori	r24, 0x01	; 1
+ 19a:	85 bb       	out	0x15, r24	; 21
+		
+		OCR2=(per3*255/100);           // multiply percentage of motorC's speed by the PWM value(255)... example: 100% : 100*255/100 = 255(max speed)
+ 19c:	23 9f       	mul	r18, r19
+ 19e:	c0 01       	movw	r24, r0
+ 1a0:	11 24       	eor	r1, r1
+ 1a2:	bf 01       	movw	r22, r30
+ 1a4:	0e 94 e9 00 	call	0x1d2	; 0x1d2 <__divmodhi4>
+ 1a8:	63 bd       	out	0x23, r22	; 35
+		//output zero on pin PC3 and one on pin PC2 to make motor rotate clockwise
+		PORTC &= (~(1<<PC3));
+ 1aa:	85 b3       	in	r24, 0x15	; 21
+ 1ac:	87 7f       	andi	r24, 0xF7	; 247
+ 1ae:	85 bb       	out	0x15, r24	; 21
+		PORTC |= (1<<PC2);
+ 1b0:	85 b3       	in	r24, 0x15	; 21
+ 1b2:	84 60       	ori	r24, 0x04	; 4
+ 1b4:	85 bb       	out	0x15, r24	; 21
+		
+		OCR1AL=(per2*255/100);        // multiply percentage of motorB's speed by the PWM value(255)... example: 100% : 100*255/100 = 255(max speed)
+ 1b6:	24 9f       	mul	r18, r20
+ 1b8:	c0 01       	movw	r24, r0
+ 1ba:	11 24       	eor	r1, r1
+ 1bc:	bf 01       	movw	r22, r30
+ 1be:	0e 94 e9 00 	call	0x1d2	; 0x1d2 <__divmodhi4>
+ 1c2:	6a bd       	out	0x2a, r22	; 42
+		//output zero on pin PC5 and one on pin PC4 to make motor rotate clockwise
+		PORTC &= (~(1<<PC5));
+ 1c4:	85 b3       	in	r24, 0x15	; 21
+ 1c6:	8f 7d       	andi	r24, 0xDF	; 223
+ 1c8:	85 bb       	out	0x15, r24	; 21
+		PORTC |= (1<<PC4);
+ 1ca:	85 b3       	in	r24, 0x15	; 21
+ 1cc:	80 61       	ori	r24, 0x10	; 16
+ 1ce:	85 bb       	out	0x15, r24	; 21
+ 1d0:	cc cf       	rjmp	.-104    	; 0x16a <main+0xb6>
+
+000001d2 <__divmodhi4>:
+ 1d2:	97 fb       	bst	r25, 7
+ 1d4:	07 2e       	mov	r0, r23
+ 1d6:	16 f4       	brtc	.+4      	; 0x1dc <__divmodhi4+0xa>
+ 1d8:	00 94       	com	r0
+ 1da:	07 d0       	rcall	.+14     	; 0x1ea <__divmodhi4_neg1>
+ 1dc:	77 fd       	sbrc	r23, 7
+ 1de:	09 d0       	rcall	.+18     	; 0x1f2 <__divmodhi4_neg2>
+ 1e0:	0e 94 fd 00 	call	0x1fa	; 0x1fa <__udivmodhi4>
+ 1e4:	07 fc       	sbrc	r0, 7
+ 1e6:	05 d0       	rcall	.+10     	; 0x1f2 <__divmodhi4_neg2>
+ 1e8:	3e f4       	brtc	.+14     	; 0x1f8 <__divmodhi4_exit>
+
+000001ea <__divmodhi4_neg1>:
+ 1ea:	90 95       	com	r25
+ 1ec:	81 95       	neg	r24
+ 1ee:	9f 4f       	sbci	r25, 0xFF	; 255
+ 1f0:	08 95       	ret
+
+000001f2 <__divmodhi4_neg2>:
+ 1f2:	70 95       	com	r23
+ 1f4:	61 95       	neg	r22
+ 1f6:	7f 4f       	sbci	r23, 0xFF	; 255
+
+000001f8 <__divmodhi4_exit>:
+ 1f8:	08 95       	ret
+
+000001fa <__udivmodhi4>:
+ 1fa:	aa 1b       	sub	r26, r26
+ 1fc:	bb 1b       	sub	r27, r27
+ 1fe:	51 e1       	ldi	r21, 0x11	; 17
+ 200:	07 c0       	rjmp	.+14     	; 0x210 <__udivmodhi4_ep>
+
+00000202 <__udivmodhi4_loop>:
+ 202:	aa 1f       	adc	r26, r26
+ 204:	bb 1f       	adc	r27, r27
+ 206:	a6 17       	cp	r26, r22
+ 208:	b7 07       	cpc	r27, r23
+ 20a:	10 f0       	brcs	.+4      	; 0x210 <__udivmodhi4_ep>
+ 20c:	a6 1b       	sub	r26, r22
+ 20e:	b7 0b       	sbc	r27, r23
+
+00000210 <__udivmodhi4_ep>:
+ 210:	88 1f       	adc	r24, r24
+ 212:	99 1f       	adc	r25, r25
+ 214:	5a 95       	dec	r21
+ 216:	a9 f7       	brne	.-22     	; 0x202 <__udivmodhi4_loop>
+ 218:	80 95       	com	r24
+ 21a:	90 95       	com	r25
+ 21c:	bc 01       	movw	r22, r24
+ 21e:	cd 01       	movw	r24, r26
+ 220:	08 95       	ret
+
+00000222 <_exit>:
+ 222:	f8 94       	cli
+
+00000224 <__stop_program>:
+ 224:	ff cf       	rjmp	.-2      	; 0x224 <__stop_program>
